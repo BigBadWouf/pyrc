@@ -1,0 +1,3 @@
+# PyRC
+
+Tiny IRC library
