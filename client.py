@@ -265,12 +265,6 @@ class Client:
         for cmd in self.opt.get('commands'):
             await self.send(cmd)
         await self.send("MODE %s +B" % (self.opt.get('nickname')))
-        chan = self.channel('#cpourop')
-        chan.join()
-        self._channels['#cpourop'] = chan 
-        chan = self.channel('#cpourop1')
-        chan.join()
-        self._channels['#cpourop1'] = chan 
     
     async def quit_event(self, event):
         nick = event.get('from')[0].lower()
