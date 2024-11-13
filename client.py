@@ -46,12 +46,12 @@ class Client:
         self.modules = {}
         self.activeCAP = []
         self.connected = False
+        self.channels = {}
 
         self.connection = None
         self.buffr = ""
         self._events = {}
         self._modules = {}
-        self._channels = {}
         self._retry_count = 0
 
         self.eventloop = asyncio.get_event_loop()
@@ -75,6 +75,8 @@ class Client:
     """ Channels & userlist """
 
     def channel(self, name):
+        channel = Channel(self, name)
+        self.channels[name] = channel
         return Channel(self, name)
 
     """ Modules loader """
@@ -273,8 +275,8 @@ class Client:
             self.disconnect
 
         channels = []
-        for channel in self._channels:
-            if nick in self._channels[channel].users:
+        for channel in self.channels:
+            if nick in self.channels[channel].users:
                 channels.append(channel)
                 self.emit("quit%s" % (channel), event)
         self.emit("quit_channels", event, channels)
@@ -282,8 +284,8 @@ class Client:
     async def nick_event(self, event):
         nick = event.get('from')[0].lower()
         channels = []
-        for channel in self._channels:
-            if nick in self._channels[channel].users:
+        for channel in self.channels:
+            if nick in self.channels[channel].users:
                 channels.append(channel)
                 self.emit("nick%s" % (channel), event)
         self.emit("nick_channels", event, channels)
