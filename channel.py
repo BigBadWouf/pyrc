@@ -98,7 +98,7 @@ class Channel:
             del self.users[nick.lower()]
 
     async def mode_event(self, event):
-        if event.has('channel'):
+        if event.get('channel'):
             modes = self._parse_status_from_mode(event.get('msg'))
             for is_giving, status, nick in modes:
                 self._update_user_status(is_giving, status, nick)
@@ -112,7 +112,7 @@ class Channel:
     """ Private methods """
 
     def _parse_status_from_mode(self, event_message):
-        mode, users = event_message.split(" ", 1)
+        modes, users = event_message.split(" ", 1)
         users = users.split()
         users.reverse()
 
@@ -190,6 +190,8 @@ class Channel:
             return self.HALFOP
         elif letter == 'o':
             return self.OP
+        else:
+            return None
     
     def _get_status_from_nick(self, nick):
         return self._get_status_from_symbol(nick[0])

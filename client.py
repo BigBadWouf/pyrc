@@ -20,14 +20,15 @@ DEFAULT_OPTIONS = {
     'port': 6667,
     'ssl': True,
     'password': None,
-    'cap': [],
+    'cap': [], # Request IRCv3 capabilities
     'sasl_fail': True, # Continue connect if sasl fail
-    'auto_reconnect': True, # Not yet implemented
-    'retry_count': 5,  # 0 = unlimited
+    'auto_reconnect': True,
+    'retry_count': 5, 
     'retry_delay': 5, # Delay in seconde
     'commands': [],
     'debug': False,
-    'modules': 'modules'
+    'modules': 'modules', # Modules directory replace / by . path from root : path.to.folder 
+    'scripts': [] # list of modules to load. Order may be important (for dependancies)
 }
 
 class Client:
@@ -37,6 +38,9 @@ class Client:
 
     def __init__(self, options):
         self.opt = {**DEFAULT_OPTIONS, **options}
+
+        self.log = Logger()
+        self.parser = Parser()
 
         if self.opt.get('debug'):
             self.log.info(self.opt)
@@ -55,9 +59,6 @@ class Client:
         self._retry_count = 0
 
         self.eventloop = asyncio.get_event_loop()
-
-        self.log = Logger()
-        self.parser = Parser()
 
         self.on("connecting", self.connecting)
         self.on("ping", self.pong)
@@ -84,8 +85,9 @@ class Client:
     def load_modules(self):
         root = os.path.dirname(os.path.dirname(__file__))
         pwd = os.path.join(root, self.opt.get('modules'))
-        for module in os.listdir(pwd):
-            if module == '__init__.py' or os.path.isdir(os.path.join(pwd, module)) or module[-3:] != '.py':
+        for module in self.opt.get('scripts'): 
+            if module[-3:] != '.py':
+                self.log.warn("Le module %s n'est pas un fichier python" % (module))
                 continue
             name = module[:-3]
             modulePath = '%s.%s' % (self.opt.get('modules'), name)
