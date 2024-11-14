@@ -34,17 +34,17 @@ class Channel:
 
     def is_op(self, nick):
         if nick.lower() in self.users:
-            return self.OP in self.users['nick'].get('status')
+            return self.OP in self.users[nick.lower()].get('status')
         return False
 
     def is_halfop(self, nick):
         if nick.lower() in self.users:
-            return self.HALFOP in self.users['nick'].get('status')
+            return self.HALFOP in self.users[nick.lower()].get('status')
         return False
     
     def is_voice(self, nick):
         if nick.lower() in self.users:
-            return self.VOICE in self.users['nick'].get('status')
+            return self.VOICE in self.users[nick.lower()].get('status')
         return False
 
     def is_on(self, nick):
