@@ -89,8 +89,8 @@ class Channel:
     async def kick_event(self, event):
         nick = event.get('target').lower()
         if self.is_on(nick):
-            await asyncio.sleep(3)
-            del self.users[nick]
+            if nick in self.users:
+                del self.users[nick]
 
     async def quit_event(self, event):
         nick, ident, host = event.get('from')
