@@ -17,11 +17,11 @@ class Channel:
         self.users = {}
 
         self.client.on("join%s" % (self.name), self.join_event)
-        self.client.on("kick%s" % (self.name), self.kick_event)
         self.client.on("part%s" % (self.name), self.part_event)
         self.client.on("quit%s" % (self.name), self.quit_event)
         self.client.on("mode%s" % (self.name), self.mode_event)
         self.client.on("nick%s" % (self.name), self.nick_event)
+        self.client.on("kick%s" % (self.name), self.kick_event)
         self.client.on("353%s" % (self.name), self.names_event)
     
     """ Public methods """
