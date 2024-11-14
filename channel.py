@@ -126,7 +126,7 @@ class Channel:
             else:
                 status = self._get_status_from_letter(token)
                 if status:
-                    user_status.append((add, status, users.pop()))
+                    users_status.append((add, status, users.pop()))
         return users_status
 
 
