@@ -256,7 +256,7 @@ class Client:
 
     async def auth_failled(self, event):
         await self.send("CAP END")
-        if self.opt.sasl_fail:
+        if self.opt.get('sasl_fail'):
             await self.register()
         else:
             await self.disconnect()
