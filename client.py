@@ -177,7 +177,7 @@ class Client:
                 e = self.parser.parse(line.rstrip())
 
                 if e.has("channel") and e.get("channel"):
-                    self.emit("%s%s" % (e.get("action"), e.get("channel")), e)
+                    self.emit("%s%s" % (e.get("action"), e.get("channel").lower()), e)
 
                 self.emit(e.get("action"), e)
 
