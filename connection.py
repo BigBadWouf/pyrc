@@ -6,6 +6,7 @@ class Connection:
     """A TCP connection over the IRC protocol."""
 
     CONNECT_TIMEOUT = 10
+    MAX_LEN = 451
 
     def __init__(self, hostname, port, useSSL, eventloop=None):
         self.hostname = hostname
@@ -49,15 +50,17 @@ class Connection:
 
     async def send(self, data):
         """Add data to send queue."""
-        if len(data) > 510:
-            total = len(data)
-            to_send = [ data[i:i+510] for i in range(0, total, 510) ]
+        if len(data) > self.MAX_LEN:
+            prefix_index = data.index(':')
+            prefix = data[0:prefix_index+1]
+            msg = data[prefix_index+1:]
+            to_send = [ msg[i:i+(self.MAX_LEN-len(prefix))] for i in range(0, len(msg), self.MAX_LEN-len(prefix)) ]
+            
             for line in to_send:
-                self.writer.write(bytes(line + "\r\n", "UTF-8"))
-                await self.writer.drain()
+                self.writer.write(bytes(prefix + line + "\r\n", "UTF-8"))
         else:
             self.writer.write(bytes(data + "\r\n", "UTF-8"))
-            await self.writer.drain()
+        await self.writer.drain()
 
     async def recv(self, *, timeout=None):
         return await asyncio.wait_for(self.reader.readline(), timeout=timeout)
