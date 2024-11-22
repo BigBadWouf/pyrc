@@ -53,7 +53,7 @@ class Connection:
             total = len(data)
             to_send = [ data[i:i+510] for i in range(0, total, 510) ]
             for line in to_send:
-                self.writer.write(bytes(to_send[line] + "\r\n", "UTF-8"))
+                self.writer.write(bytes(line + "\r\n", "UTF-8"))
                 await self.writer.drain()
         else:
             self.writer.write(bytes(data + "\r\n", "UTF-8"))
