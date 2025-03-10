@@ -101,7 +101,7 @@ class Channel:
         if event.get('channel'):
             modes = self._parse_status_from_mode(event.get('msg'))
             for is_giving, status, nick in modes:
-                self._update_user_status(is_giving, status, nick)
+                self._update_user_status(is_giving, status, nick.lower())
         
     async def names_event(self, event):
         users = self._parse_users_from_names(event.get('msg'))
@@ -156,21 +156,21 @@ class Channel:
         if nick[0] in '+%@':
             return True
     
-    def _update_user_status(self, is_giving, nick, status):
+    def _update_user_status(self, is_giving, status, nick):
         if nick in self.users:
             if is_giving:
                 self._giving_status(nick, status)
             else:
                 self._remove_status(nick, status)
     
-    def _has_status(nick, status):
+    def _has_status(self, nick, status):
         return status in self.users[nick].get('status')
     
-    def _giving_status(nick, status):
+    def _giving_status(self, nick, status):
         if not self._has_status(nick, status):
             self.users[nick].get('status').append(status)
 
-    def _remove_status(nick, status):
+    def _remove_status(self, nick, status):
         if self._has_status(nick, status):
             self.users[nick].get('status').remove(status)
 
